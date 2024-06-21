@@ -17,8 +17,9 @@ app.use(express.json());
 const apiKey = process.env.OPENAI_API_KEY;
 const openai = new OpenAI({ apiKey });
 
-// In-memory storage for chat histories
+// In-memory storage for chat histories and user data
 const chatHistories = {};
+const userData = {};
 
 // Function to generate a random chatId
 const generateChatId = () => {
@@ -28,9 +29,9 @@ const generateChatId = () => {
 async function getCompletionFromMessages(
   messages = [],
   model = "gpt-3.5-turbo-0125",
-  temperature = 0,
-  maxTokens = 50,
-  masterPrompt = "Assume that you are Darshana Perera who is the marketing manager of ABC company. And your company is a soap company which produces lix, sunlight."
+  temperature = 0.7,
+  maxTokens = 150,
+  masterPrompt = "Assume that you are Darshana Perera who is the marketing manager of ABC company. And your company is a soap company which produces lix, sunlight. Provide simple short answers"
 ) {
   try {
     const response = await openai.chat.completions.create({
@@ -38,8 +39,7 @@ async function getCompletionFromMessages(
       messages: [
         {
           role: "system",
-          content:
-            "Assume that you are Darshana Perera who is the marketing manager of ABC company. And your company is a soap company which produces lix, sunlight. Provide simple short answers",
+          content: masterPrompt,
         }, // Add master prompt as system message
         ...messages, // Include user/system messages after the master prompt
       ],
@@ -82,12 +82,7 @@ app.post("/sendMessage", async (req, res) => {
 
   // Initialize chat history if not exists
   if (!chatHistories.hasOwnProperty(chatId)) {
-    chatHistories[chatId] = [
-      //   {
-      //     role: "system",
-      //     content: "Welcome to the chat!",
-      //   },
-    ];
+    chatHistories[chatId] = [];
   }
 
   // Add user message to chat history
@@ -100,7 +95,7 @@ app.post("/sendMessage", async (req, res) => {
       "gpt-3.5-turbo-0125",
       0.7,
       150,
-      "Welcome to the chat!"
+      "Assume that you are Darshana Perera who is the marketing manager of ABC company. And your company is a soap company which produces lix, sunlight. Provide simple short answers"
     );
 
     // Add assistant response to chat history
@@ -115,15 +110,131 @@ app.post("/sendMessage", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post("/sendMessagebot", async (req, res) => {
+  const { chatId, message } = req.body;
+
+  // Initialize chat history if not exists
+  if (!chatHistories.hasOwnProperty(chatId)) {
+    chatHistories[chatId] = [];
+  }
+
+  // Add user message to chat history
+  chatHistories[chatId].push({ role: "assistant", content: message });
+  res.json({
+    chatHistory: chatHistories[chatId],
+  });
+});
+
+app.post("/sendMessageuser", async (req, res) => {
+  const { chatId, message } = req.body;
+
+  // Initialize chat history if not exists
+  if (!chatHistories.hasOwnProperty(chatId)) {
+    chatHistories[chatId] = [];
+  }
+
+  // Add user message to chat history
+  chatHistories[chatId].push({ role: "user", content: message });
+  res.json({
+    chatHistory: chatHistories[chatId],
+  });
+});
+
+app.post("/sendMessagebotend", async (req, res) => {
+  const { chatId } = req.body;
+
+  // Initialize chat history if not exists
+  if (!chatHistories.hasOwnProperty(chatId)) {
+    chatHistories[chatId] = [];
+  }
+
+  // Add system message to chat history
+  chatHistories[chatId].push({
+    role: "assistant",
+    content: "Automate chat continued",
+  });
+  res.json({
+    chatHistory: chatHistories[chatId],
+  });
+});
+
+app.post("/sendMessagebotstart", async (req, res) => {
+  const { chatId } = req.body;
+
+  // Initialize chat history if not exists
+  if (!chatHistories.hasOwnProperty(chatId)) {
+    chatHistories[chatId] = [];
+  }
+
+  // Add system message to chat history
+  chatHistories[chatId].push({
+    role: "assistant",
+    content: "Manual chat continued",
+  });
+  res.json({
+    chatHistory: chatHistories[chatId],
+  });
+});
+
+app.post("/sendMessagetobot", async (req, res) => {
+  const { chatId } = req.body;
+
+  // Initialize chat history if not exists
+  if (!chatHistories.hasOwnProperty(chatId)) {
+    chatHistories[chatId] = [];
+  }
+  res.json({
+    chatHistory: chatHistories[chatId],
+  });
+});
+
+// Define UserDataStore array to store all user data
+const UserDataStore = [];
+
+// Endpoint to submit user data
+app.post("/submitUserData", (req, res) => {
+  const { chatId, name, number } = req.body;
+
+  // Store user data associated with chatId
+  userData[chatId] = { name, number };
+
+  // Push user data to UserDataStore array
+  UserDataStore.push({
+    chatId,
+    name,
+    number,
+  });
+
+  res.status(200).json({ message: "User data saved successfully" });
+});
+// Update the /allChatHistory endpoint to include user data
 app.get("/allChatHistory", (req, res) => {
   const allChatHistories = Object.keys(chatHistories).map((chatId) => ({
     chatId,
     messages: chatHistories[chatId],
+    userData: userData[chatId] || { name: "", number: "" },
   }));
 
   res.json({ chatHistories: allChatHistories });
 });
 
+// Define an endpoint to get user data for a given chatId
+app.get("/userData/", (req, res) => {
+  const { chatId } = req.params;
+
+  // Check if userData exists for the provided chatId
+  if (userData.hasOwnProperty(chatId)) {
+    res.json({ userData: userData[chatId] });
+  } else {
+    res.status(404).json({ error: `User data for chatId ${chatId} not found` });
+  }
+});
+
+// Endpoint to view all user data in UserDataStore
+app.get("/viewUserData", (req, res) => {
+  res.json({ userData: UserDataStore });
+});
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
