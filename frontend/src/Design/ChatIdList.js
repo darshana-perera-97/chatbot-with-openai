@@ -166,101 +166,107 @@ const ChatList = () => {
   }, []);
 
   return (
-    <div className="container mt-5">
-      <div className="chat-list">
-        <h2>All Chat Histories</h2>
-        <Tab.Container
-          id="left-tabs-example"
-          activeKey={activeChatId}
-          onSelect={(k) => setActiveChatId(k)}
-        >
-          <Row>
-            <Col sm={3}>
-              <Nav variant="pills" className="flex-column">
-                {chatHistories.map((chatHistory, index) => (
-                  <Nav.Item key={index}>
-                    <Nav.Link eventKey={chatHistory.chatId}>
-                      {/* {chatHistory.userData
-                        ? `${chatHistory.userData.name} (${chatHistory.userData.number})`
-                        : `Chat ${chatHistory.chatId}`} */}
-                      {/* {userData[index].name} */}
-                      {userData.userData[index].name}
-                      {/* {chatHistory.chatId} */}
-                    </Nav.Link>
-                  </Nav.Item>
-                ))}
-              </Nav>
-            </Col>
-            <Col sm={9}>
-              <Tab.Content>
-                {chatHistories.map((chatHistory, index) => (
-                  <Tab.Pane eventKey={chatHistory.chatId} key={index}>
-                    <div className="chat-container">
-                      <h4>
-                        Chats for {userData.userData[index].name} |{" "}
-                        {userData.userData[index].number}
-                      </h4>
-                      <ul className="chat-messages">
-                        {chatHistory.messages.map((message, index) => (
-                          <li
-                            key={index}
-                            className={`message-container ${message.role}`}
-                          >
-                            <div className={`message ${message.role}`}>
-                              {message.content}
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <Form
-                      onSubmit={handleSendMessage}
-                      className="send-message-form"
-                    >
-                      <Form.Group controlId="formMessage">
-                        <div className="d-flex">
-                          {controlActive && (
-                            <Form.Control
-                              type="text"
-                              placeholder="Type a message..."
-                              value={newMessage}
-                              onChange={(e) => setNewMessage(e.target.value)}
-                            />
-                          )}
-                          {!controlActive && (
-                            <Button
-                              variant="info"
-                              className="ml-2"
-                              onClick={handleSendMessageBotend}
-                            >
-                              Get Contol
-                            </Button>
-                          )}
-                          {controlActive && (
-                            <Button
-                              variant="info"
-                              className="ml-2"
-                              onClick={handleSendMessageBotstart}
-                            >
-                              Auto Reply
-                            </Button>
-                          )}
-                          <Button
-                            variant="primary"
-                            type="submit"
-                            onClick={() => setControlActive(true)}
-                          >
-                            Send
-                          </Button>
+    <div>
+      <div className="container"></div>
+      <div className="container mt-5">
+        <div className="chat-list">
+          <h2>All Chat Histories ( {userData.userData.length} )</h2>
+          <Tab.Container
+            id="left-tabs-example"
+            activeKey={activeChatId}
+            onSelect={(k) => setActiveChatId(k)}
+          >
+            <Row>
+              <Col sm={3}>
+                <Nav variant="pills" className="flex-column">
+                  {chatHistories.map((chatHistory, index) => (
+                    <Nav.Item key={index}>
+                      <Nav.Link eventKey={chatHistory.chatId}>
+                        {userData.userData[index].name}
+                      </Nav.Link>
+                    </Nav.Item>
+                  ))}
+                </Nav>
+              </Col>
+              <Col sm={9}>
+                <div>
+                  <Tab.Content>
+                    {chatHistories.map((chatHistory, index) => (
+                      <Tab.Pane eventKey={chatHistory.chatId} key={index}>
+                        <div className="chat-container">
+                          <h4>
+                            Chats for {userData.userData[index].name} |{" "}
+                            {userData.userData[index].number}
+                          </h4>
+                          <div className="scrollable-container">
+                            <ul className="chat-messages">
+                              {chatHistory.messages.map((message, index) => (
+                                <li
+                                  key={index}
+                                  className={`message-container ${message.role}`}
+                                >
+                                  <div className={`message ${message.role}`}>
+                                    {message.content}
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         </div>
-                      </Form.Group>
-                    </Form>
-                  </Tab.Pane>
-                ))}
-              </Tab.Content>
-            </Col>
-          </Row>
-        </Tab.Container>
+                        <Form
+                          onSubmit={handleSendMessage}
+                          className="send-message-form"
+                        >
+                          <Form.Group controlId="formMessage">
+                            <div className="d-flex">
+                              {controlActive && (
+                                <Form.Control
+                                  type="text"
+                                  placeholder="Type a message..."
+                                  value={newMessage}
+                                  onChange={(e) =>
+                                    setNewMessage(e.target.value)
+                                  }
+                                />
+                              )}
+                              {!controlActive && (
+                                <Button
+                                  variant="info"
+                                  className="ml-2 control"
+                                  onClick={handleSendMessageBotend}
+                                >
+                                  Get Control
+                                </Button>
+                              )}
+                              {controlActive && (
+                                <Button
+                                  variant="info"
+                                  className="ml-2 control"
+                                  onClick={handleSendMessageBotstart}
+                                >
+                                  Auto Reply
+                                </Button>
+                              )}
+                              {controlActive && (
+                                <Button
+                                  variant="primary"
+                                  type="submit"
+                                  onClick={() => setControlActive(true)}
+                                >
+                                  Send
+                                </Button>
+                              )}
+                            </div>
+                          </Form.Group>
+                        </Form>
+                      </Tab.Pane>
+                    ))}
+                  </Tab.Content>
+                </div>
+              </Col>
+            </Row>
+          </Tab.Container>
+        </div>
       </div>
     </div>
   );

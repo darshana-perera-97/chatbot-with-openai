@@ -3,6 +3,8 @@ import "./App.css";
 import Chatbot from "./Design/Chatbot";
 import Chat2 from "./Design/Chat2";
 import ChatIdList from "./Design/ChatIdList";
+import LandingPage from "./Design/LandingPage";
+import Login from "./Design/Login";
 
 function App() {
   return (
@@ -23,9 +25,11 @@ function App() {
     //   </header>
     // </div>
     <div>
-      <Chatbot />
+      {/* <Chatbot /> */}
       {/* <Chat2 /> */}
-      <ChatIdList />
+      {/* <ChatIdList /> */}
+      <LandingPage />
+      <Login />
     </div>
   );
 }
