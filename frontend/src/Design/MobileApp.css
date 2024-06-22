@@ -1,0 +1,39 @@
+/* Ensure the Offcanvas has a higher z-index */
+.offcanvas {
+    z-index: 1050;
+}
+
+/* Adjust the margin for the top navbar */
+.container {
+    margin-top: 56px;
+    /* Height of the navbar */
+}
+
+/* Style adjustments for better mobile view */
+.send-message-form {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.scrollable-container {
+    height: calc(100vh - 200px);
+    /* Adjust height for navbar and form */
+    overflow-y: auto;
+    padding-bottom: 60px;
+    /* Ensure padding for fixed form */
+}
+
+.mobileApp .center {
+    display: flex;
+    width: 100vw;
+    justify-content: center;
+}
+
+.mobileApp .form-control {
+    margin-right: 20px;
+    width: 52%;
+}

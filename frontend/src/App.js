@@ -5,6 +5,7 @@ import Chat2 from "./Design/Chat2";
 import ChatIdList from "./Design/ChatIdList";
 import LandingPage from "./Design/LandingPage";
 import Login from "./Design/Login";
+import MobileApp from "./Design/MobileApp";
 
 function App() {
   return (
@@ -28,8 +29,9 @@ function App() {
       {/* <Chatbot /> */}
       {/* <Chat2 /> */}
       {/* <ChatIdList /> */}
-      <LandingPage />
-      <Login />
+      {/* <LandingPage /> */}
+      {/* <Login /> */}
+      <MobileApp />
     </div>
   );
 }
