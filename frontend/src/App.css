@@ -142,6 +142,7 @@
 
 .nav-pills .nav-link.active {
   background-color: #0b58aa;
+  color: #ffffff !important;
 }
 
 .chat-container {
@@ -257,7 +258,7 @@
 
 .form-control {
   margin-right: 20px;
-  width: 72%;
+  width: 42%;
 }
 
 
@@ -299,4 +300,3 @@
   background-color: #218838;
   /* Darker shade for hover effect */
 }
-
