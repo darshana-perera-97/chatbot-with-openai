@@ -33,7 +33,6 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
-
       {/* <Chatbot /> */}
       {/* <Chat2 /> */}
       {/* <ChatIdList /> */}
