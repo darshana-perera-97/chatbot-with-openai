@@ -38,7 +38,7 @@ const MobileApp = () => {
     const fetchAllChatHistories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3002/allChatHistory"
+          "https://chatbot-backend-6ech.onrender.com/allChatHistory"
         );
         setChatHistories(response.data.chatHistories);
         if (response.data.chatHistories.length > 0 && !activeChatId) {
@@ -91,7 +91,7 @@ const MobileApp = () => {
   const sendMessageToBot = async (message) => {
     try {
       const response = await axios.post(
-        `http://localhost:3002/sendMessagebot`,
+        `https://chatbot-backend-6ech.onrender.com/sendMessagebot`,
         {
           chatId: activeChatId,
           message: message,
@@ -115,7 +115,7 @@ const MobileApp = () => {
   const handleSendMessageBotend = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:3002/sendMessagebotend`,
+        `https://chatbot-backend-6ech.onrender.com/sendMessagebotend`,
         {
           chatId: activeChatId,
           message: "",
@@ -132,7 +132,7 @@ const MobileApp = () => {
   const handleSendMessageBotstart = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:3002/sendMessagebotstart`,
+        `https://chatbot-backend-6ech.onrender.com/sendMessagebotstart`,
         {
           chatId: activeChatId,
           message: "",
@@ -155,7 +155,7 @@ const MobileApp = () => {
 
   const callNewAPI = async () => {
     try {
-      const response = await axios.get(`http://localhost:3002/viewUserData`);
+      const response = await axios.get(`https://chatbot-backend-6ech.onrender.com/viewUserData`);
       setUserData(response.data);
       console.log(userData.userData[0].name);
     } catch (error) {

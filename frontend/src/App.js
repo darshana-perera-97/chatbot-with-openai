@@ -32,6 +32,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/mobile" element={<MobileApp />} />
       </Routes>
       {/* <Chatbot /> */}
       {/* <Chat2 /> */}
