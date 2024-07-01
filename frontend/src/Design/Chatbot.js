@@ -74,7 +74,8 @@ const Chatbot = () => {
   const fetchChatHistory = async (chatId) => {
     try {
       const response = await axios.get(
-        `http://localhost:3002/chatHistory/${chatId}`
+        `https://chatbot-backend-6ech.onrender.com/chatHistory/${chatId}`
+        // `http://localhost:3002/chatHistory/${chatId}`
       );
       if (response.data && response.data.chatHistory) {
         setMessages(response.data.chatHistory);
@@ -97,7 +98,7 @@ const Chatbot = () => {
       if (controlActive) {
         try {
           const response = await axios.post(
-            "http://localhost:3002/sendMessage",
+            "https://chatbot-backend-6ech.onrender.com/sendMessage",
             {
               chatId: chatId,
               message: input,
@@ -114,7 +115,7 @@ const Chatbot = () => {
       } else {
         try {
           const response = await axios.post(
-            "http://localhost:3002/sendMessageuser",
+            "https://chatbot-backend-6ech.onrender.com/sendMessageuser",
             {
               chatId: chatId,
               message: input,

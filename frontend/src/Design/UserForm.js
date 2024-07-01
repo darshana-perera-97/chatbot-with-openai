@@ -11,7 +11,7 @@ const UserForm = ({ chatId, onSubmit }) => {
       localStorage.setItem("userName", name);
       localStorage.setItem("userNumber", number);
       axios
-        .post("http://localhost:3002/submitUserData", {
+        .post("https://chatbot-backend-6ech.onrender.com/submitUserData", {
           chatId,
           name,
           number,
