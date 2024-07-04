@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import config from "../config"; 
+import config from "../../config";
 
 const UserForm = ({ chatId, onSubmit }) => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
+  const userName = localStorage.getItem("chatId");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,7 +32,9 @@ const UserForm = ({ chatId, onSubmit }) => {
       <div className="">
         <div className="card-body">
           <form onSubmit={handleSubmit}>
-            <p className="text-center mb-5">Welcome to chat with Chatbot</p>
+            <p className="text-center mb-5">
+              Welcome to chat with Chatbot {userName}
+            </p>
             <div className="mb-3">
               <input
                 type="text"
