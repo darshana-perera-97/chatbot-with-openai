@@ -95,7 +95,7 @@ app.post("/sendMessage", async (req, res) => {
       "gpt-3.5-turbo-0125",
       0.7,
       150,
-      "Assume that you are Darshana Perera who is the marketing manager of ABC company. And your company is a soap company which produces lix, sunlight. Provide simple short answers"
+      textareaContent
     );
 
     // Add assistant response to chat history
@@ -197,6 +197,7 @@ app.post("/submitUserData", (req, res) => {
   const { chatId, name, number } = req.body;
 
   // Store user data associated with chatId
+  console.log(chatId);
   userData[chatId] = { name, number };
 
   // Push user data to UserDataStore array
@@ -207,6 +208,20 @@ app.post("/submitUserData", (req, res) => {
   });
 
   res.status(200).json({ message: "User data saved successfully" });
+});
+
+// Define a global variable to store text area content
+let textareaContent =
+  "Assume that you are Darshana Perera who is the marketing manager of ABC company. And your company is a soap company which produces lix, sunlight. Provide simple short answers";
+
+// Endpoint to store text area content
+app.post("/storeTextareaContent", (req, res) => {
+  const { content } = req.body;
+
+  // Store content in global variable
+  textareaContent = content;
+
+  res.status(200).json({ message: "Text area content stored successfully" });
 });
 // Update the /allChatHistory endpoint to include user data
 app.get("/allChatHistory", (req, res) => {

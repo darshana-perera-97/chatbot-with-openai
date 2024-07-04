@@ -25,7 +25,7 @@ const ChatList = () => {
     const fetchAllChatHistories = async () => {
       try {
         const response = await axios.get(
-          "https://chatbot-backend-6ech.onrender.com/allChatHistory"
+          "http://localhost:3002/allChatHistory"
         );
         setChatHistories(response.data.chatHistories);
         if (response.data.chatHistories.length > 0 && !activeChatId) {
@@ -79,7 +79,7 @@ const ChatList = () => {
   const sendMessageToBot = async (message) => {
     try {
       const response = await axios.post(
-        `https://chatbot-backend-6ech.onrender.com/sendMessagebot`,
+        "http://localhost:3002/sendMessagebot",
         {
           chatId: activeChatId,
           message: message,
@@ -103,7 +103,7 @@ const ChatList = () => {
   const handleSendMessageBotend = async () => {
     try {
       const response = await axios.post(
-        `https://chatbot-backend-6ech.onrender.com/sendMessagebotend`,
+        "http://localhost:3002/sendMessagebotend",
         {
           chatId: activeChatId,
           message: "",
@@ -122,7 +122,7 @@ const ChatList = () => {
   const handleSendMessageBotstart = async () => {
     try {
       const response = await axios.post(
-        `https://chatbot-backend-6ech.onrender.com/sendMessagebotstart`,
+        "http://localhost:3002/sendMessagebotstart",
         {
           chatId: activeChatId,
           message: "",
@@ -148,7 +148,7 @@ const ChatList = () => {
   // Function to call the new API and log the response
   const callNewAPI = async () => {
     try {
-      const response = await axios.get(`https://chatbot-backend-6ech.onrender.com/viewUserData`);
+      const response = await axios.get("http://localhost:3002/viewUserData");
       setUserData(response.data); // Assuming response.data is the user data object
       console.log(userData.userData[0].name);
     } catch (error) {
@@ -165,12 +165,16 @@ const ChatList = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const filteredUserData = userData.userData.filter(
+    (user) => user.name && user.number
+  );
+
   return (
     <div>
       <div className="container"></div>
       <div className="container mt-5">
         <div className="chat-list">
-          <h2>All Chat Histories ( {userData.userData.length} )</h2>
+          <h2>All Chat Histories ( {filteredUserData.length} )</h2>
           <Tab.Container
             id="left-tabs-example"
             activeKey={activeChatId}
@@ -179,11 +183,9 @@ const ChatList = () => {
             <Row>
               <Col sm={3}>
                 <Nav variant="pills" className="flex-column">
-                  {chatHistories.map((chatHistory, index) => (
+                  {filteredUserData.map((user, index) => (
                     <Nav.Item key={index}>
-                      <Nav.Link eventKey={chatHistory.chatId}>
-                        {userData.userData[index].name}
-                      </Nav.Link>
+                      <Nav.Link eventKey={user.chatId}>{user.name}</Nav.Link>
                     </Nav.Item>
                   ))}
                 </Nav>
@@ -191,76 +193,88 @@ const ChatList = () => {
               <Col sm={9}>
                 <div>
                   <Tab.Content>
-                    {chatHistories.map((chatHistory, index) => (
-                      <Tab.Pane eventKey={chatHistory.chatId} key={index}>
-                        <div className="chat-container">
-                          <h4>
-                            Chats for {userData.userData[index].name} |{" "}
-                            {userData.userData[index].number}
-                          </h4>
-                          <div className="scrollable-container">
-                            <ul className="chat-messages">
-                              {chatHistory.messages.map((message, index) => (
-                                <li
-                                  key={index}
-                                  className={`message-container ${message.role}`}
-                                >
-                                  <div className={`message ${message.role}`}>
-                                    {message.content}
-                                  </div>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                        <Form
-                          onSubmit={handleSendMessage}
-                          className="send-message-form"
-                        >
-                          <Form.Group controlId="formMessage">
-                            <div className="d-flex">
-                              {controlActive && (
-                                <Form.Control
-                                  type="text"
-                                  placeholder="Type a message..."
-                                  value={newMessage}
-                                  onChange={(e) =>
-                                    setNewMessage(e.target.value)
-                                  }
-                                />
-                              )}
-                              {!controlActive && (
-                                <Button
-                                  variant="info"
-                                  className="ml-2 control"
-                                  onClick={handleSendMessageBotend}
-                                >
-                                  Get Control
-                                </Button>
-                              )}
-                              {controlActive && (
-                                <Button
-                                  variant="info"
-                                  className="ml-2 control"
-                                  onClick={handleSendMessageBotstart}
-                                >
-                                  Auto Reply
-                                </Button>
-                              )}
-                              {controlActive && (
-                                <Button
-                                  variant="primary"
-                                  type="submit"
-                                  onClick={() => setControlActive(true)}
-                                >
-                                  Send
-                                </Button>
-                              )}
+                    {filteredUserData.map((user, index) => {
+                      const chatHistory = chatHistories.find(
+                        (history) => history.chatId === user.chatId
+                      );
+                      return (
+                        chatHistory && (
+                          <Tab.Pane eventKey={user.chatId} key={index}>
+                            <div className="chat-container">
+                              <h4>
+                                Chats for {user.name} | {user.number}
+                              </h4>
+                              <div className="scrollable-container">
+                                <ul className="chat-messages">
+                                  {chatHistory.messages.map(
+                                    (message, index) => (
+                                      <li
+                                        key={index}
+                                        className={
+                                          "message-container ${message.role}"
+                                        }
+                                      >
+                                        <div
+                                          className={"message ${message.role}"}
+                                        >
+                                          {message.content}
+                                        </div>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              </div>
                             </div>
-                          </Form.Group>
-                        </Form>
-                      </Tab.Pane>
-                    ))}
+                            <Form
+                              onSubmit={handleSendMessage}
+                              className="send-message-form"
+                            >
+                              <Form.Group controlId="formMessage">
+                                <div className="d-flex">
+                                  {controlActive && (
+                                    <Form.Control
+                                      type="text"
+                                      placeholder="Type a message..."
+                                      value={newMessage}
+                                      onChange={(e) =>
+                                        setNewMessage(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {!controlActive && (
+                                    <Button
+                                      variant="info"
+                                      className="ml-2 control"
+                                      onClick={handleSendMessageBotend}
+                                    >
+                                      Get Control
+                                    </Button>
+                                  )}
+                                  {controlActive && (
+                                    <Button
+                                      variant="info"
+                                      className="ml-2 control"
+                                      onClick={handleSendMessageBotstart}
+                                    >
+                                      Auto Reply
+                                    </Button>
+                                  )}
+                                  {controlActive && (
+                                    <Button
+                                      variant="primary"
+                                      type="submit"
+                                      onClick={() => setControlActive(true)}
+                                    >
+                                      Send
+                                    </Button>
+                                  )}
+                                </div>
+                              </Form.Group>
+                            </Form>
+                          </Tab.Pane>
+                        )
+                      );
+                    })}
                   </Tab.Content>
                 </div>
               </Col>

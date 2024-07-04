@@ -29,14 +29,14 @@ function App() {
     //   </header>
     // </div>
     <div>
-      <Routes>
+      {/* <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/mobile" element={<MobileApp />} />
-      </Routes>
-      {/* <Chatbot /> */}
+      </Routes> */}
+      <Chatbot />
       {/* <Chat2 /> */}
-      {/* <ChatIdList /> */}
+      <ChatIdList />
       {/* <LandingPage /> */}
       {/* <Login /> */}
       {/* <MobileApp /> */}

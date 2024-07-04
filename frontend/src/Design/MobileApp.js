@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import config from "../config"; 
 import {
   Navbar,
   Nav,
@@ -38,7 +39,7 @@ const MobileApp = () => {
     const fetchAllChatHistories = async () => {
       try {
         const response = await axios.get(
-          "https://chatbot-backend-6ech.onrender.com/allChatHistory"
+          "${config.apiBaseUrl}allChatHistory"
         );
         setChatHistories(response.data.chatHistories);
         if (response.data.chatHistories.length > 0 && !activeChatId) {
@@ -91,7 +92,7 @@ const MobileApp = () => {
   const sendMessageToBot = async (message) => {
     try {
       const response = await axios.post(
-        `https://chatbot-backend-6ech.onrender.com/sendMessagebot`,
+        `${config.apiBaseUrl}sendMessagebot`,
         {
           chatId: activeChatId,
           message: message,
@@ -115,7 +116,7 @@ const MobileApp = () => {
   const handleSendMessageBotend = async () => {
     try {
       const response = await axios.post(
-        `https://chatbot-backend-6ech.onrender.com/sendMessagebotend`,
+        `${config.apiBaseUrl}sendMessagebotend`,
         {
           chatId: activeChatId,
           message: "",
@@ -132,7 +133,7 @@ const MobileApp = () => {
   const handleSendMessageBotstart = async () => {
     try {
       const response = await axios.post(
-        `https://chatbot-backend-6ech.onrender.com/sendMessagebotstart`,
+        `${config.apiBaseUrl}sendMessagebotstart`,
         {
           chatId: activeChatId,
           message: "",
@@ -155,7 +156,7 @@ const MobileApp = () => {
 
   const callNewAPI = async () => {
     try {
-      const response = await axios.get(`https://chatbot-backend-6ech.onrender.com/viewUserData`);
+      const response = await axios.get(`${config.apiBaseUrl}viewUserData`);
       setUserData(response.data);
       console.log(userData.userData[0].name);
     } catch (error) {
