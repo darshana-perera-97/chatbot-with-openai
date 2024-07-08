@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { OpenAI } = require("openai");
+const fs = require("fs");
+const path = require("path");
 
 // Create an Express app
 const app = express();
@@ -21,10 +23,26 @@ const openai = new OpenAI({ apiKey });
 const chatHistories = {};
 const userData = {};
 
+// Path to the file storing chat IDs
+const chatIdsFilePath = path.join(__dirname, "chatIds.json");
+
 // Function to generate a random chatId
 const generateChatId = () => {
   return Math.random().toString(36).substring(2);
 };
+
+// Read chat IDs from the file when the server starts
+let allChatIds = [];
+if (fs.existsSync(chatIdsFilePath)) {
+  const data = fs.readFileSync(chatIdsFilePath, "utf-8");
+  allChatIds = JSON.parse(data);
+  allChatIds.forEach((chatId) => {
+    chatHistories[chatId] = [];
+    userData[chatId] = {};
+  });
+} else {
+  fs.writeFileSync(chatIdsFilePath, JSON.stringify([]));
+}
 
 async function getCompletionFromMessages(
   messages = [],
@@ -54,6 +72,11 @@ async function getCompletionFromMessages(
   }
 }
 
+// Function to save chat IDs to the file
+const saveChatIdsToFile = () => {
+  fs.writeFileSync(chatIdsFilePath, JSON.stringify(allChatIds));
+};
+
 // Define an endpoint to get the entire chat history for a given chatId
 app.get("/chatHistory/:chatId", (req, res) => {
   const { chatId } = req.params;
@@ -71,8 +94,6 @@ app.get("/chatHistory/:chatId", (req, res) => {
 
 // Define an endpoint to get all chatIds
 app.get("/chatIds", (req, res) => {
-  const allChatIds = Object.keys(chatHistories);
-  console.log(allChatIds);
   res.json({ chatIds: allChatIds });
 });
 
@@ -83,6 +104,8 @@ app.post("/sendMessage", async (req, res) => {
   // Initialize chat history if not exists
   if (!chatHistories.hasOwnProperty(chatId)) {
     chatHistories[chatId] = [];
+    allChatIds.push(chatId);
+    saveChatIdsToFile();
   }
 
   // Add user message to chat history
@@ -117,6 +140,8 @@ app.post("/sendMessagebot", async (req, res) => {
   // Initialize chat history if not exists
   if (!chatHistories.hasOwnProperty(chatId)) {
     chatHistories[chatId] = [];
+    allChatIds.push(chatId);
+    saveChatIdsToFile();
   }
 
   // Add user message to chat history
@@ -132,6 +157,8 @@ app.post("/sendMessageuser", async (req, res) => {
   // Initialize chat history if not exists
   if (!chatHistories.hasOwnProperty(chatId)) {
     chatHistories[chatId] = [];
+    allChatIds.push(chatId);
+    saveChatIdsToFile();
   }
 
   // Add user message to chat history
@@ -147,6 +174,8 @@ app.post("/sendMessagebotend", async (req, res) => {
   // Initialize chat history if not exists
   if (!chatHistories.hasOwnProperty(chatId)) {
     chatHistories[chatId] = [];
+    allChatIds.push(chatId);
+    saveChatIdsToFile();
   }
 
   // Add system message to chat history
@@ -165,6 +194,8 @@ app.post("/sendMessagebotstart", async (req, res) => {
   // Initialize chat history if not exists
   if (!chatHistories.hasOwnProperty(chatId)) {
     chatHistories[chatId] = [];
+    allChatIds.push(chatId);
+    saveChatIdsToFile();
   }
 
   // Add system message to chat history
@@ -183,6 +214,8 @@ app.post("/sendMessagetobot", async (req, res) => {
   // Initialize chat history if not exists
   if (!chatHistories.hasOwnProperty(chatId)) {
     chatHistories[chatId] = [];
+    allChatIds.push(chatId);
+    saveChatIdsToFile();
   }
   res.json({
     chatHistory: chatHistories[chatId],
@@ -223,6 +256,7 @@ app.post("/storeTextareaContent", (req, res) => {
 
   res.status(200).json({ message: "Text area content stored successfully" });
 });
+
 // Update the /allChatHistory endpoint to include user data
 app.get("/allChatHistory", (req, res) => {
   const allChatHistories = Object.keys(chatHistories).map((chatId) => ({
@@ -235,7 +269,7 @@ app.get("/allChatHistory", (req, res) => {
 });
 
 // Define an endpoint to get user data for a given chatId
-app.get("/userData/", (req, res) => {
+app.get("/userData/:chatId", (req, res) => {
   const { chatId } = req.params;
 
   // Check if userData exists for the provided chatId
@@ -250,6 +284,7 @@ app.get("/userData/", (req, res) => {
 app.get("/viewUserData", (req, res) => {
   res.json({ userData: UserDataStore });
 });
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
