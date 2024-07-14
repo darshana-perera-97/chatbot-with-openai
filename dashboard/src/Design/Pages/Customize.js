@@ -9,7 +9,7 @@ const Customize = () => {
       <Container fluid className="content-container">
         <div className="content">
           {/* Your main content goes here */}
-          asdddddddddddddddddddddddddddddddddddddddddddddddddd1sdfwe
+          <h2 className="mt-3 mb-4">Chatbot Customization</h2>Coming Soon
         </div>
       </Container>
     </div>

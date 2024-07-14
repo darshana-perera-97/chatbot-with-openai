@@ -29,9 +29,10 @@ const Knowledge = () => {
     <div className="d-flex">
       <Sidebar data="/Knowledge" />
       <Container fluid className="content-container">
+        <h2 className="mt-3 mb-4">Add knowledge base</h2>
         <div className="content">
           <Form.Group controlId="exampleForm.ControlTextarea1">
-            <Form.Label>Example Text Area</Form.Label>
+            {/* <Form.Label>Example Text Area</Form.Label> */}
             <Form.Control
               as="textarea"
               rows={3}
@@ -40,7 +41,7 @@ const Knowledge = () => {
               placeholder="Enter text here..."
             />
           </Form.Group>
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button variant="primary mt-3" onClick={handleSubmit}>
             Store Text Area Content
           </Button>{" "}
         </div>
