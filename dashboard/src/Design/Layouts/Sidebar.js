@@ -55,8 +55,8 @@ const Sidebar = (prop) => {
         </Nav.Link>
         <Nav.Link
           href="/Intergrate"
-          eventKey="/Intergrate"
-          className={activeTab === "/Intergrate" ? "active-tab" : ""}
+          eventKey="/Integrate"
+          className={activeTab === "/Integrate" ? "active-tab" : ""}
         >
           Intergrate
         </Nav.Link>

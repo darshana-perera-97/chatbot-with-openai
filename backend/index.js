@@ -23,8 +23,9 @@ const openai = new OpenAI({ apiKey });
 const chatHistories = {};
 const userData = {};
 
-// Path to the file storing chat IDs
+// Path to the file storing chat IDs and user data
 const chatIdsFilePath = path.join(__dirname, "chatIds.json");
+const userDataFilePath = path.join(__dirname, "userData.json");
 
 // Function to generate a random chatId
 const generateChatId = () => {
@@ -43,6 +44,32 @@ if (fs.existsSync(chatIdsFilePath)) {
 } else {
   fs.writeFileSync(chatIdsFilePath, JSON.stringify([]));
 }
+
+// Function to save chat IDs to the file
+const saveChatIdsToFile = () => {
+  fs.writeFileSync(chatIdsFilePath, JSON.stringify(allChatIds));
+};
+
+// Initialize UserDataStore from a file if it exists
+let UserDataStore = [];
+if (fs.existsSync(userDataFilePath)) {
+  const data = fs.readFileSync(userDataFilePath, "utf-8");
+  UserDataStore = JSON.parse(data);
+  UserDataStore.forEach((user) => {
+    userData[user.chatId] = { name: user.name, number: user.number };
+  });
+} else {
+  fs.writeFileSync(userDataFilePath, JSON.stringify([]));
+}
+
+// Function to save UserDataStore to a file
+const saveUserDataToFile = () => {
+  fs.writeFileSync(userDataFilePath, JSON.stringify(UserDataStore));
+};
+
+// Initialize counters
+let totalMessagesSent = 0;
+let manualMessagesEnabledCount = 0;
 
 async function getCompletionFromMessages(
   messages = [],
@@ -71,11 +98,6 @@ async function getCompletionFromMessages(
     throw error;
   }
 }
-
-// Function to save chat IDs to the file
-const saveChatIdsToFile = () => {
-  fs.writeFileSync(chatIdsFilePath, JSON.stringify(allChatIds));
-};
 
 // Define an endpoint to get the entire chat history for a given chatId
 app.get("/chatHistory/:chatId", (req, res) => {
@@ -110,6 +132,7 @@ app.post("/sendMessage", async (req, res) => {
 
   // Add user message to chat history
   chatHistories[chatId].push({ role: "user", content: message });
+  totalMessagesSent++;
 
   try {
     // Get AI assistant response
@@ -146,6 +169,8 @@ app.post("/sendMessagebot", async (req, res) => {
 
   // Add user message to chat history
   chatHistories[chatId].push({ role: "assistant", content: message });
+  totalMessagesSent++;
+
   res.json({
     chatHistory: chatHistories[chatId],
   });
@@ -163,6 +188,8 @@ app.post("/sendMessageuser", async (req, res) => {
 
   // Add user message to chat history
   chatHistories[chatId].push({ role: "user", content: message });
+  totalMessagesSent++;
+
   res.json({
     chatHistory: chatHistories[chatId],
   });
@@ -183,6 +210,7 @@ app.post("/sendMessagebotend", async (req, res) => {
     role: "assistant",
     content: "Automate chat continued",
   });
+
   res.json({
     chatHistory: chatHistories[chatId],
   });
@@ -203,6 +231,8 @@ app.post("/sendMessagebotstart", async (req, res) => {
     role: "assistant",
     content: "Manual chat continued",
   });
+  manualMessagesEnabledCount++;
+
   res.json({
     chatHistory: chatHistories[chatId],
   });
@@ -222,15 +252,11 @@ app.post("/sendMessagetobot", async (req, res) => {
   });
 });
 
-// Define UserDataStore array to store all user data
-const UserDataStore = [];
-
 // Endpoint to submit user data
 app.post("/submitUserData", (req, res) => {
   const { chatId, name, number } = req.body;
 
   // Store user data associated with chatId
-  console.log(chatId);
   userData[chatId] = { name, number };
 
   // Push user data to UserDataStore array
@@ -239,6 +265,9 @@ app.post("/submitUserData", (req, res) => {
     name,
     number,
   });
+
+  // Save updated UserDataStore to file
+  saveUserDataToFile();
 
   res.status(200).json({ message: "User data saved successfully" });
 });
@@ -283,6 +312,17 @@ app.get("/userData/:chatId", (req, res) => {
 // Endpoint to view all user data in UserDataStore
 app.get("/viewUserData", (req, res) => {
   res.json({ userData: UserDataStore });
+});
+
+// Define the /analytics endpoint
+app.get("/analytics", (req, res) => {
+  const analytics = {
+    numberOfContacts: UserDataStore.length,
+    numberOfMessagesSent: totalMessagesSent,
+    numberOfChatIds: allChatIds.length,
+    numberOfManualMessagesEnabledChats: manualMessagesEnabledCount,
+  };
+  res.json({ analytics });
 });
 
 // Start the server
