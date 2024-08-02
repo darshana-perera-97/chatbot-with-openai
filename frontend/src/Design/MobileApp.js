@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import config from "../config"; 
+import config from "../config";
 import {
   Navbar,
   Nav,
@@ -18,15 +18,7 @@ import Home from "./Assets/home.png";
 
 const MobileApp = () => {
   const [chatHistories, setChatHistories] = useState([]);
-  const [userData, setUserData] = useState({
-    userData: [
-      {
-        chatId: null,
-        name: "",
-        number: "",
-      },
-    ],
-  });
+  const [userData, setUserData] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [activeChatId, setActiveChatId] = useState(
     localStorage.getItem("activeChatId") || ""
@@ -38,9 +30,7 @@ const MobileApp = () => {
   useEffect(() => {
     const fetchAllChatHistories = async () => {
       try {
-        const response = await axios.get(
-          "${config.apiBaseUrl}allChatHistory"
-        );
+        const response = await axios.get(`${config.apiBaseUrl}allChatHistory`);
         setChatHistories(response.data.chatHistories);
         if (response.data.chatHistories.length > 0 && !activeChatId) {
           setActiveChatId(response.data.chatHistories[0].chatId);
@@ -64,6 +54,19 @@ const MobileApp = () => {
       localStorage.setItem("activeChatId", activeChatId);
     }
   }, [activeChatId]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${config.apiBaseUrl}viewUserData`);
+        setUserData(response.data.userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -91,13 +94,10 @@ const MobileApp = () => {
 
   const sendMessageToBot = async (message) => {
     try {
-      const response = await axios.post(
-        `${config.apiBaseUrl}sendMessagebot`,
-        {
-          chatId: activeChatId,
-          message: message,
-        }
-      );
+      const response = await axios.post(`${config.apiBaseUrl}sendMessagebot`, {
+        chatId: activeChatId,
+        message: message,
+      });
 
       const updatedChatHistory = response.data.chatHistory;
       setChatHistories((prevChatHistories) =>
@@ -154,24 +154,6 @@ const MobileApp = () => {
     }));
   };
 
-  const callNewAPI = async () => {
-    try {
-      const response = await axios.get(`${config.apiBaseUrl}viewUserData`);
-      setUserData(response.data);
-      console.log(userData.userData[0].name);
-    } catch (error) {
-      console.error("Error fetching data from viewUserData API:", error);
-    }
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      callNewAPI();
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const handleSelectChat = (chatId) => {
     setActiveChatId(chatId);
     setShowChatList(false);
@@ -181,7 +163,6 @@ const MobileApp = () => {
     <div className="mobileApp">
       <Navbar bg="light" expand="lg" fixed="top">
         <div>
-          {/* <i className="fas fa-bars"></i> */}
           <img
             src={Menu}
             onClick={() => setShowChatList(true)}
@@ -207,7 +188,7 @@ const MobileApp = () => {
             {chatHistories.map((chatHistory, index) => (
               <Nav.Item key={index}>
                 <Nav.Link onClick={() => handleSelectChat(chatHistory.chatId)}>
-                  {userData.userData[index]?.name || "Unknown"}
+                  {userData[index]?.name || "Unknown"}
                 </Nav.Link>
               </Nav.Item>
             ))}
@@ -224,8 +205,8 @@ const MobileApp = () => {
                   <Tab.Pane eventKey={chatHistory.chatId} key={index}>
                     <div className="chat-container">
                       <h4>
-                        Chats for {userData.userData[index]?.name || "Unknown"}{" "}
-                        | {userData.userData[index]?.number || "N/A"}
+                        Chats for {userData[index]?.name || "Unknown"} |{" "}
+                        {userData[index]?.number || "N/A"}
                       </h4>
                       <div className="scrollable-container">
                         <ul className="chat-messages">
