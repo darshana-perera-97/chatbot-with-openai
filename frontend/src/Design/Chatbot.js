@@ -18,6 +18,23 @@ const Chatbot = () => {
     name: localStorage.getItem("userName") || "",
     number: localStorage.getItem("userNumber") || "",
   });
+  useEffect(() => {
+    const storedChatId = localStorage.getItem("chatId");
+    if (storedChatId) {
+      setChatId(storedChatId);
+      fetchChatHistory(storedChatId);
+    } else {
+      generateChatId(); // Generate a new chatId if not stored
+    }
+
+    const intervalId = setInterval(() => {
+      if (chatId) {
+        fetchChatHistory(chatId);
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array to run only once on mount
 
   useEffect(() => {
     if (!userInfo.name || !userInfo.number) {
@@ -69,6 +86,7 @@ const Chatbot = () => {
     const newChatId = Math.random().toString(36).substr(2, 9);
     localStorage.setItem("chatId", newChatId);
     setChatId(newChatId);
+    console.log("new" + newChatId);
   };
 
   const fetchChatHistory = async (chatId) => {

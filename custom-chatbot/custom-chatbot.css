@@ -1,0 +1,139 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.chatbot-container {
+    width: 360px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    z-index: 1000;
+}
+
+.chatbot {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    overflow: hidden;
+}
+
+.chatbot-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.chatbot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.chatbot-message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.chatbot-message.user {
+    background-color: #e1f5fe;
+    text-align: left;
+}
+
+.chatbot-message.bot {
+    background-color: #f1f1f1;
+    text-align: right;
+}
+
+.chatbot-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+.chatbot-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.chatbot-input button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chatbot-input button:hover {
+    background-color: #0056b3;
+}
+
+.chatbot-toggle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 24px;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chatbot-toggle.open {
+    background-color: #ff5722;
+}
+
+.chatbot-toggle.closed {
+    background-color: #007bff;
+}
+
+.user-form {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-form input {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.user-form button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.user-form button:hover {
+    background-color: #0056b3;
+}
